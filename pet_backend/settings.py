@@ -108,8 +108,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'pet',
-        'USER': 'postgres',
-        'PASSWORD': 'root',
+        'USER': 'kevin',
+        'PASSWORD': 'test',
         'HOST': '127.0.0.1',
         'PORT': '',
     }
