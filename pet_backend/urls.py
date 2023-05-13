@@ -9,4 +9,10 @@ urlpatterns = [
 
     # Users Resource URLs
     path('api/v1/', include('users_management.urls.urls')),
+
+    # Pet Resource URLs
+    path('api/v1/', include('pets_management.urls')),
+
+    # Image Resource URLs
+    path('api/v1/', include('media_management.urls')),
 ]

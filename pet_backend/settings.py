@@ -13,7 +13,7 @@ SECRET_KEY = 'django-insecure-86bqa^bc6fy!0&c5@er6bbwqup@-k!b=ctn=&9z(n3g2$$!r)y
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['161.35.210.153']
+ALLOWED_HOSTS = ['161.35.210.153', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -32,6 +32,8 @@ INSTALLED_APPS = [
     'channels',
 
     'users_management',
+    'pets_management',
+    'media_management'
 ]
 
 REST_FRAMEWORK = {
@@ -93,28 +95,27 @@ AUTH_USER_MODEL = 'users_management.User'
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'pet',
-#         'USER': 'postgres',
-#         'PASSWORD': 'root',
-#         'HOST': '127.0.0.1',
-#         'PORT': '',
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'pet',
-        'USER': 'kevin',
-        'PASSWORD': 'test',
+        'USER': 'postgres',
+        'PASSWORD': 'root',
         'HOST': '127.0.0.1',
         'PORT': '',
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'pet',
+#         'USER': 'kevin',
+#         'PASSWORD': 'test',
+#         'HOST': '127.0.0.1',
+#         'PORT': '',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
