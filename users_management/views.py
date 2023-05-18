@@ -86,6 +86,16 @@ class UserDetail(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @staticmethod
+    def delete(request, pk):
+        try:
+            user = User.objects.get(id=pk)
+        except User.DoesNotExist:
+            return Response("User not found", status=status.HTTP_404_NOT_FOUND)
+
+        user.delete()
+
+        return Response('User deleted successfully')
 
 class ResetUserPassword(APIView):
 
