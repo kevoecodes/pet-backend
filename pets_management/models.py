@@ -24,3 +24,12 @@ class Pet(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class PetLocation(models.Model):
+    pet = models.ForeignKey(Pet, on_delete=models.CASCADE)
+    longitudes = models.FloatField()
+    latitudes = models.FloatField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
