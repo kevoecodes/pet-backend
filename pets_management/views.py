@@ -3,10 +3,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from pet_backend.utils.common import StandardResultsSetPagination
+from pets_management.managers import coordinate_outside_boundary
 from pets_management.models import Pet, PetLocation
 from pets_management.serializers import PetsListSerializer, PetsPostSerializer, PetLocationsListSerializer, \
-    PetLocationPostSerializer
-from pets_management.sockets.managers import PetTrackChannel
+    PetLocationPostSerializer, PetGeofencePostSerializer
+from pets_management.sockets.managers import PetTrackChannel, SystemTrackerChannel
 
 
 class PetsView(APIView):
@@ -95,9 +96,21 @@ class PetsLocationView(APIView):
     def post(request):
         serializer = PetLocationPostSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            obj = serializer.save(pet=Pet.objects.get(device_no=serializer.validated_data['device_number']))
+            pet = Pet.objects.get(device_no=serializer.validated_data['device_number'])
+            obj = serializer.save(pet=pet)
             data = PetLocationsListSerializer(instance=obj, many=False).data
             PetTrackChannel(data)
+            outside_boundary = coordinate_outside_boundary(
+                pet,
+                serializer.validated_data['latitudes'],
+                serializer.validated_data['longitudes']
+            )
+            print('Outside boundary', outside_boundary)
+            if outside_boundary:
+                SystemTrackerChannel(PetsListSerializer(instance=pet, many=False).data)
+                pet.update_outside_fence(True)
+            else:
+                pet.update_outside_fence(False)
             return Response({
                 "status": True,
                 "data": data
@@ -124,3 +137,24 @@ class ListPetLocations(generics.ListAPIView):
             return queryset
         return []
 
+
+class CreatePetGeofence(APIView):
+    @staticmethod
+    def post(request, pk):
+        try:
+            pet = Pet.objects.get(id=pk)
+        except Pet.DoesNotExist:
+            return Response("Pet not found", status=status.HTTP_404_NOT_FOUND)
+
+        serializer = PetGeofencePostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(pet=pet)
+            return Response('Geofence created successfully')
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GoogleApiKey(APIView):
+
+    @staticmethod
+    def get():
+        return Response('AIzaSyDQz72mL0bI2Li-VJ2AAyFl78sB4UbQIMk')

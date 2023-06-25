@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from pets_management.models import Pet, PetLocation
+from pets_management.models import Pet, PetLocation, PetGeofenceCoord
 
 
 class PetsPostSerializer(serializers.ModelSerializer):
@@ -43,3 +43,29 @@ class PetLocationPostSerializer(serializers.Serializer):
             raise serializers.ValidationError('Device number unknown')
 
         return data
+
+
+class PetGeofenceCoordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PetGeofenceCoord
+        fields = ['longitudes', 'latitudes']
+
+
+class PetGeofencePostSerializer(serializers.Serializer):
+    points = serializers.ListField(
+        child=PetGeofenceCoordSerializer(),
+        min_length=4,
+        max_length=20
+    )
+
+    def create(self, validated_data):
+        pet = validated_data.pop('pet')
+        prev_points = PetGeofenceCoord.objects.filter(pet_id=pet.id)
+        for p in prev_points:
+            p.delete()
+        points = validated_data.pop('points')
+        geofence = []
+        for point in points:
+            geofence.append(PetGeofenceCoord.objects.create(pet=pet, **point))
+        print(geofence)
+        return geofence

@@ -16,3 +16,19 @@ class PetTrackChannel:
                 "data": self.data,
             }
         )
+
+
+class SystemTrackerChannel:
+    def __init__(self, data):
+        self.channel_name, self.data = 'system_tracker', {"type": "pet_outside_boundary", "pet":data}
+        self.__post_to_channel()
+
+    def __post_to_channel(self):
+        layer = get_channel_layer()
+        async_to_sync(layer.group_send)(
+            self.channel_name,
+            {
+                "type": "send.message",
+                "data": self.data,
+            }
+        )
