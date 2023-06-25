@@ -157,4 +157,4 @@ class GoogleApiKey(APIView):
 
     @staticmethod
     def get():
-        return Response('AIzaSyDQz72mL0bI2Li-VJ2AAyFl78sB4UbQIMk')
+        return Response('')
