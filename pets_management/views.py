@@ -112,8 +112,7 @@ class PetsLocationView(APIView):
             else:
                 pet.update_outside_fence(False)
             return Response({
-                "status": True,
-                "data": data
+                outside_boundary
             })
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
