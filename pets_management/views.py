@@ -105,15 +105,13 @@ class PetsLocationView(APIView):
                 serializer.validated_data['latitudes'],
                 serializer.validated_data['longitudes']
             )
-            print('Outside boundary', outside_boundary)
+            # print('Outside boundary', outside_boundary)
             if outside_boundary:
                 SystemTrackerChannel(PetsListSerializer(instance=pet, many=False).data)
                 pet.update_outside_fence(True)
             else:
                 pet.update_outside_fence(False)
-            return Response({
-                outside_boundary
-            })
+            return Response(outside_boundary)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
